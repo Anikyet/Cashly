@@ -4,6 +4,11 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "dev": "",
+    "build": "",
+    "start": "",
+    "lint": "",
+    "check-types": ""
   },
   "dependencies": {
     "@repo/store": "*",
