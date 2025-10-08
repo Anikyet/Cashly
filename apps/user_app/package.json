@@ -1,28 +1,37 @@
 {
-  "name": "web",
+  "name": "user_app",
   "version": "0.1.0",
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack --port 3000",
+    "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint --max-warnings 0",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@repo/db": "*",
+    "@repo/store": "*",
     "@repo/ui": "*",
-    "next": "^15.5.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "bcrypt": "^6.0.0",
+    "next": "14",
+    "next-auth": "^4.24.11",
+    "react": "18",
+    "react-dom": "18",
+    "recoil": "^0.7.7"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
+    "@types/bcrypt": "^6.0.0",
     "@types/node": "^22.15.3",
-    "@types/react": "19.1.0",
-    "@types/react-dom": "19.1.1",
+    "@types/react": "18",
+    "@types/react-dom": "18",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9.34.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "3",
     "typescript": "5.9.2"
   }
 }
