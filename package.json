@@ -7,7 +7,9 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "db:generate": "cd packages/db && yarn prisma generate && cd ../..",
+    "start-user-app": "cd ./apps/user_app && yarn run start",
     "check-types": "turbo run check-types"
+
   },
   "devDependencies": {
     "prettier": "^3.6.2",

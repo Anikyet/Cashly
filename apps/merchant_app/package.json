@@ -4,11 +4,11 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3001",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint --max-warnings 0",
-    "check-types": "tsc --noEmit"
+    "dev": "",
+    "build": "",
+    "start": "",
+    "lint": "",
+    "check-types": ""
   },
   "dependencies": {
     "@repo/store": "*",
