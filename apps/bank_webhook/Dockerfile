@@ -1,11 +1,7 @@
-# Stage 1: Build
+# Stage 1: Builder
 FROM node:20.12.0-slim AS builder
 
 WORKDIR /usr/src/app
-
-# Accept DATABASE_URL as build argument
-ARG DATABASE_URL
-ENV DATABASE_URL=${DATABASE_URL}
 
 # Install build tools
 RUN apt-get update && apt-get install -y \
@@ -22,10 +18,10 @@ COPY packages ./packages
 # Install dependencies
 RUN yarn install --frozen-lockfile
 
-# Generate Prisma client
+# Generate Prisma client (DB connection not required)
 RUN yarn run db:generate
 
-# Build bank_webhook
+# Build the app
 RUN yarn --cwd apps/bank_webhook build
 
 # Stage 2: Production
@@ -33,7 +29,7 @@ FROM node:20.12.0-slim AS prod
 
 WORKDIR /usr/src/app
 
-# Install runtime deps
+# Runtime dependencies
 RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 # Copy built app and dependencies
@@ -47,4 +43,4 @@ COPY --from=builder /usr/src/app/packages ./packages
 EXPOSE 5501
 
 # Start the app
-CMD ["yarn", "--cwd", "apps/bank_webhook", "start"]
+CMD ["node", "apps/bank_webhook/dist/index.js"]
