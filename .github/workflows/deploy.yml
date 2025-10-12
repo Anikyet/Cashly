@@ -1,9 +1,13 @@
 name: Build and Deploy Cashly Apps
 
+# Manual trigger only
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Choose deployment environment'
+        required: true
+        default: 'production'
 
 jobs:
   build-and-deploy:
@@ -80,4 +84,3 @@ jobs:
               -e BANK_WEBHOOK_URL=http://bank_webhook:5501/hdfcWebhook \
               -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
               anikyet/user_app:latest
-
