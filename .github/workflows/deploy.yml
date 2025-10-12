@@ -34,7 +34,8 @@ jobs:
           push: true
           tags: anikyet/user_app:latest
 
-      # 4️⃣ Build and push bank_webhook image
+        
+      # 4️⃣ Build and push bank_webhook image with DATABASE_URL
       - name: Build and Push bank_webhook Image
         uses: docker/build-push-action@v5
         with:
@@ -42,6 +43,9 @@ jobs:
           file: ./apps/bank_webhook/Dockerfile
           push: true
           tags: anikyet/bank_webhook:latest
+          build-args: |
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+
 
       # 5️⃣ SSH into EC2 and deploy
       - name: Deploy to EC2
