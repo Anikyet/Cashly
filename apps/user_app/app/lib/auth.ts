@@ -12,7 +12,7 @@ export const authOptions = {
       },
       async authorize(credentials: any) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("Email and password are required"); 
+          throw new Error("Email and password are required");
         }
 
         const existingUser = await db.user.findUnique({
@@ -41,6 +41,16 @@ export const authOptions = {
   },
   secret: process.env.JWT_SECRET || "secret",
   callbacks: {
+    // async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
+    //   try {
+    //     const parsed = new URL(url);
+    //     if (parsed.origin === baseUrl) return url;
+    //   } catch {
+    //     // ignore invalid URLs
+    //   }
+    //   return `${baseUrl}/dashboard`;
+    // },
+
     async session({ session, token }: any) {
       session.user.id = token.sub;
       return session;
@@ -49,5 +59,6 @@ export const authOptions = {
       if (user) token.sub = user.id;
       return token;
     },
+
   },
 };
