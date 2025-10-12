@@ -58,6 +58,13 @@ model Balance {
   user    User @relation(fields: [userId], references: [id])
 }
 
+model emailOtp{
+  id        Int       @id @default(autoincrement())
+  email     String
+  otp       String
+  expiresAt DateTime
+}
+
 enum OnRampStatus {
   Success
   Failed

@@ -23,6 +23,11 @@ export async function p2pTransfer(to: string, amount: number) {
             message: "User not found"
         }
     }
+    if(toUser.id === Number(from)){
+      return {
+        message:"Cannot send money to your own number."
+      }
+    }
     await prisma.$transaction(async (tx) => {
         
         await tx.$queryRaw` SELECT  * FROM "Balance" WHERE "userId" = ${Number(from)} FOR UPDATE`;
@@ -52,4 +57,5 @@ export async function p2pTransfer(to: string, amount: number) {
             }
           })
     });
+    return {message:"Transaction Done Succesfully",status:true}
 }

@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  user_app:
+    build:
+      context: .
+      dockerfile: ./apps/user_app/Dockerfile  # path to your user_app Dockerfile
+    container_name: user_app
+    ports:
+      - "5500:5500"
+    environment:
+      - NODE_ENV=production
+      - PORT=5500
+      # Example: if user_app needs to call bank_webhook
+      - BANK_WEBHOOK_URL=http://bank_webhook:5501
+    depends_on:
+      - bank_webhook
+    networks:
+      - cashly_network
+
+  bank_webhook:
+    build:
+      context: .
+      dockerfile: ./apps/bank_webhook/Dockerfile  # path to your bank_webhook Dockerfile
+    container_name: bank_webhook
+    ports:
+      - "5501:5501"
+    environment:
+      - NODE_ENV=production
+      - PORT=5501
+      # Add your DB or service env vars if needed
+      # - DATABASE_URL=postgresql://user:pass@db:5432/mydb
+    networks:
+      - cashly_network
+
+# Shared internal network so they can reach each other
+networks:
+  cashly_network:
+    driver: bridge

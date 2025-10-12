@@ -6,7 +6,9 @@
     "scripts": {
     "build": "npx esbuild ./src/index.ts --bundle --platform=node --outfile=dist/index.js",
     "start": "node dist/index.js",
-    "dev": "yarn run build && yarn run start"
+    "dev": "yarn run build && yarn run start",
+    "db:generate": "cd packages/db && yarn prisma generate && cd ../.."
+
   },
   "dependencies": {
     "@types/express": "^5.0.3",

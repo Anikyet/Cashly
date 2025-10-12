@@ -1,11 +1,9 @@
 "use server"
 
-
-
-
 import { getServerSession } from "next-auth"
 import { authOptions } from "../auth"
 import prisma from "@repo/db/client";
+import { callingWebhook } from "./callingWebhook";
 
 
 export async function createOnRampTransaction(amount:number, provider:string){
@@ -17,7 +15,8 @@ export async function createOnRampTransaction(amount:number, provider:string){
     const userId = session.user.id;
     if(!userId){
         return {
-            message:"User not logged in"
+            message:"User not logged in",
+            status:false
         }
     }
     await prisma.onRampTransaction.create({
@@ -30,7 +29,15 @@ export async function createOnRampTransaction(amount:number, provider:string){
             token: token
         }
     });
+    const paymentInformation = {
+        token: token,
+        user_identifier: Number(userId),
+        amount:amount,
+    }
+    callingWebhook(paymentInformation)
+
     return {
-        message:"On Ramp transaction created successfully"
+        message:"On Ramp transaction created successfully",
+        status:true
     }
 } 

@@ -1,0 +1,31 @@
+# .dockerignore
+# Ignore unnecessary files and folders
+
+# Node and build artifacts
+node_modules
+npm-debug.log
+yarn-error.log
+*.log
+.next
+dist
+build
+coverage
+
+# Local env files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Git and editor stuff
+.git
+.gitignore
+Dockerfile
+README.md
+.vscode
+.idea
+
+# Ignore other app builds if you don’t need them
+apps/merchant/.next
+apps/webhook/.next
