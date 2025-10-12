@@ -13,7 +13,6 @@ import { Button } from "../components/Button";
 import TypingLine from "../components/TyppingLine";
 import {  useSession } from "next-auth/react";
 import { Footer } from "../components/Footer";
-
 export default function Page() {
   // const session = await getServerSession(authOptions);
   // if (session?.user) redirect('/dashboard');
@@ -70,9 +69,10 @@ export default function Page() {
 
             {/* Right Section */}
             <div className="relative hidden md:block">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-3xl blur-3xl" />
-              <div className="relative rounded-3xl w-full h-80 bg-gradient-to-br from-blue-50 to-indigo-50 shadow-xl flex items-center justify-center text-blue-600 font-semibold text-xl">
-                <p>Digital Wallet Illustration</p>
+              <div className="absolute   rounded-3xl blur-3xl" />
+              <div className="relative  w-full h-80 bg-gradient-to-br   flex items-center justify-center text-blue-600 font-semibold text-xl">
+                {/* <p>Digital Wallet Illustration</p> */}
+                <img className=" scale-90 duration-1000 " src="/wallett.png" alt="Digital Wallet Illustration" />
               </div>
             </div>
           </div>
