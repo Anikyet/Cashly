@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
     "scripts": {
-"build": "npx esbuild ./src/index.ts --bundle --platform=node --outfile=dist/index.js",
+"build": "npx esbuild src/index.ts --bundle --platform=node --outdir=dist --format=cjs --sourcemap",
     "start": "node dist/index.js",
     "dev": "yarn run build && yarn run start",
     "db:generate": "cd packages/db && yarn prisma generate && cd ../.."

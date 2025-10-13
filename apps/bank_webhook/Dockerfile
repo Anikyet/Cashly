@@ -1,55 +1,50 @@
-# -------------------------------
+# ============================
 # Stage 1: Builder
-# -------------------------------
-FROM node:20.12.0-slim AS builder
+# ============================
+FROM node:20.12.0-alpine3.19 AS builder
 
 WORKDIR /usr/src/app
 
-# Install build tools
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    curl \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+# Install build dependencies
+RUN apk add --no-cache python3 make g++
 
 # Copy monorepo root files
 COPY package.json yarn.lock turbo.json ./
 
-# Copy apps and packages
-COPY apps ./apps
-COPY packages ./packages
+# Copy only necessary packages and apps
+COPY packages/db ./packages/db
+COPY packages/typescript-config ./packages/typescript-config
+COPY apps/bank_webhook ./apps/bank_webhook
 
 # Install dependencies
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile --inline-builds
 
-# Generate Prisma client for db package
+# Generate Prisma client for @repo/db
 RUN yarn --cwd packages/db prisma generate
 
-# Build bank_webhook app (include @repo/db in bundle)
-RUN yarn --cwd apps/bank_webhook build
+# Build bank_webhook (including @repo/db via turbo)
+RUN yarn turbo run build --filter=bank_webhook
 
-# -------------------------------
-# Stage 2: Production
-# -------------------------------
-FROM node:20.12.0-slim AS prod
+# ============================
+# Stage 2: Runner
+# ============================
+FROM node:20.12.0-alpine3.19 AS runner
 
 WORKDIR /usr/src/app
 
-# Install runtime dependencies
-RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
-
-# Copy node_modules and packages from builder
-COPY --from=builder /usr/src/app/node_modules ./node_modules
-COPY --from=builder /usr/src/app/packages ./packages
-
-# Copy built bank_webhook app
-COPY --from=builder /usr/src/app/apps/bank_webhook/dist ./dist
-COPY --from=builder /usr/src/app/apps/bank_webhook/package.json ./package.json
-
-# Expose configurable port (default 5501)
+# Set environment
+ENV NODE_ENV=production
 ENV PORT=5501
 EXPOSE $PORT
 
-# Start the app using PORT env
-CMD ["node", "dist/index.js"]
+# Copy node_modules and built files from builder
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/apps/bank_webhook ./apps/bank_webhook
 
+# Copy Prisma binaries (necessary for Query Engine)
+COPY --from=builder /usr/src/app/node_modules/.prisma ./node_modules/.prisma
+
+WORKDIR /usr/src/app/apps/bank_webhook
+
+# Start the app
+CMD ["node", "dist/index.js"]
