@@ -1,4 +1,5 @@
 import express from "express";
+import db from "@repo/db"
 const app = express();
 
 app.use(express.json())
@@ -11,7 +12,6 @@ const PORT = Number(process.env.PORT) || 5501;
 app.get("/health", (req, res) => res.status(200).send("OK"));
 
 app.post("/hdfcWebhook", async (req, res) => {
-    const db = require("@repo/db/client").default;
     //TODO: HDFC bank should ideally send us a secret so we know this is sent by them
     const paymentInformation:WebhookPayload = {
         token: req.body.token,
