@@ -15,18 +15,18 @@ RUN apt-get update && apt-get install -y \
 # Copy monorepo root files
 COPY package.json yarn.lock turbo.json ./
 
-# Copy the app and packages
-COPY apps/bank_webhook ./apps/bank_webhook
+# Copy apps and packages
+COPY apps ./apps
 COPY packages ./packages
 
-# Install dependencies
+# Install dependencies for the entire monorepo
 RUN yarn install --frozen-lockfile
 
 # Generate Prisma client (no DB connection required)
 RUN yarn run db:generate
 
-# Build the app
-RUN yarn --cwd apps/bank_webhook build
+# Build all apps (specifically bank_webhook)
+RUN yarn build --filter=apps/bank_webhook
 
 # -------------------------------
 # Stage 2: Production
@@ -38,9 +38,11 @@ WORKDIR /usr/src/app
 # Install runtime dependencies
 RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
-# Copy built app and required packages
+# Copy node_modules and packages from builder
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/packages ./packages
+
+# Copy built bank_webhook app
 COPY --from=builder /usr/src/app/apps/bank_webhook/dist ./dist
 COPY --from=builder /usr/src/app/apps/bank_webhook/package.json ./package.json
 
