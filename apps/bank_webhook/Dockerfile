@@ -1,4 +1,6 @@
+# -------------------------------
 # Stage 1: Builder
+# -------------------------------
 FROM node:20.12.0-slim AS builder
 
 WORKDIR /usr/src/app
@@ -10,37 +12,39 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy monorepo files
+# Copy monorepo root files
 COPY package.json yarn.lock turbo.json ./
+
+# Copy the app and packages
 COPY apps/bank_webhook ./apps/bank_webhook
 COPY packages ./packages
 
 # Install dependencies
 RUN yarn install --frozen-lockfile
 
-# Generate Prisma client (DB connection not required)
+# Generate Prisma client (no DB connection required)
 RUN yarn run db:generate
 
 # Build the app
 RUN yarn --cwd apps/bank_webhook build
 
+# -------------------------------
 # Stage 2: Production
+# -------------------------------
 FROM node:20.12.0-slim AS prod
 
 WORKDIR /usr/src/app
 
-# Runtime dependencies
+# Install runtime dependencies
 RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
-# Copy built app and dependencies
-COPY --from=builder /usr/src/app/apps/bank_webhook/dist ./apps/bank_webhook/dist
-COPY --from=builder /usr/src/app/apps/bank_webhook/package.json ./apps/bank_webhook/package.json
-COPY --from=builder /usr/src/app/package.json ./package.json
-COPY --from=builder /usr/src/app/yarn.lock ./yarn.lock
+# Copy built app and required packages
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/packages ./packages
+COPY --from=builder /usr/src/app/apps/bank_webhook/dist ./dist
+COPY --from=builder /usr/src/app/apps/bank_webhook/package.json ./package.json
 
 EXPOSE 5501
 
 # Start the app
-CMD ["node", "apps/bank_webhook/dist/index.js"]
+CMD ["node", "dist/index.js"]
