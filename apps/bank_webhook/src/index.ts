@@ -7,6 +7,7 @@ interface WebhookPayload {
     userId: string;
     amount: string
 }
+const PORT = Number(process.env.PORT) || 5501;
 app.get("/health", (req, res) => res.status(200).send("OK"));
 
 app.post("/hdfcWebhook", async (req, res) => {
@@ -97,4 +98,7 @@ app.post("/callWebhook", async (req, res) => {
         res.status(500).json({ message: "Error while completing the transaction" })
     }
 })
-app.listen(5501);
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
