@@ -6,15 +6,14 @@ import { useRouter } from "next/navigation";
 
 interface StatusCardProps {
   status: "success" | "failed";
-
 }
 
 export const StatusCard: React.FC<StatusCardProps> = ({ status }) => {
-    const router = useRouter();
+  const router = useRouter();
   const isSuccess = status === "success";
-    setTimeout(()=>{
-        router.back();
-    },3000)
+  setTimeout(() => {
+    window.location.href = "/transactions";
+  }, 3000);
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div
@@ -34,7 +33,6 @@ export const StatusCard: React.FC<StatusCardProps> = ({ status }) => {
           }`}
         >
           {isSuccess ? "Transaction Processed" : "Transaction Failed"}
-       
         </h2>
       </div>
     </div>

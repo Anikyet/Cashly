@@ -23,7 +23,7 @@ export const Appbar = ({
         </div>
         <div className="flex flex-row  justify-center pt-2">
             <Button onClick={user ? onSignout : onSignin}>{user ? "Logout" : "Login"}</Button>
-            <div onClick={()=> (user ? router.push("/dashboard") : router.push("/signup"))} className="text-sm text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 cursor-pointer">{user ? `${user.name}` : "Welcome, Guest"}</div>
+            <div onClick={()=> (user ? window.location.href = "/dashboard" : router.push("/signup"))} className="text-sm text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 cursor-pointer">{user ? `${user.name}` : "Welcome, Guest"}</div>
         </div>
     </div>
 }

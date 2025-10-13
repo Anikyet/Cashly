@@ -17,7 +17,8 @@ export const Button = ({ onClick, children, href }: ButtonProps) => {
       onClick(); // run custom function if provided
     }
     if (href) {
-      router.push(href); // navigate to given URL
+      // router.push(href); // navigate to given URL
+      window.location.href = href;
     }
   };
 
