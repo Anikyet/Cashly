@@ -13,7 +13,7 @@ COPY packages ./packages
 # Install all dependencies
 RUN yarn install --frozen-lockfile
 
-# Generate Prisma client (if applicable)
+# Generate Prisma client
 RUN yarn run db:generate
 
 # Build only the user_app
@@ -30,7 +30,7 @@ ENV NODE_ENV=production
 ENV PORT=5500
 EXPOSE 5500
 
-# Copy root manifest files (critical for Yarn workspaces)
+# Copy root manifest files
 COPY package.json yarn.lock turbo.json ./
 
 # Copy built files from builder
